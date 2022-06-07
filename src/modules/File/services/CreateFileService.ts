@@ -30,14 +30,18 @@ export class CreateFileService {
 
     const size = buffer.byteLength;
 
-    const fileUploadedData = await this.fileProvider.upload(buffer, key);
+    const fileUploadedData = await this.fileProvider.upload(
+      buffer,
+      key,
+      mimetype,
+    );
 
     const fileCreated = await this.fileRepository.create({
-      key,
+      key: fileUploadedData.key,
+      url: fileUploadedData.url,
       original_name: originalname,
       size,
       mimetype,
-      url: fileUploadedData.url,
     });
 
     return fileCreated;
