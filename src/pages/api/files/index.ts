@@ -1,5 +1,5 @@
 import nextConnect from 'next-connect';
-import { FileController } from '../../../modules/file/controllers/FileController';
+import { FileController } from '../../../modules/File/controllers/FileController';
 import multer from 'multer';
 
 const fileController = new FileController();
