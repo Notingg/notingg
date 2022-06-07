@@ -1,5 +1,5 @@
 import nextConnect from 'next-connect';
-import { HealthController } from '../../../modules/health/controllers/HealthController';
+import { HealthController } from '../../../modules/Health/controllers/HealthController';
 
 const healthController = new HealthController();
 
