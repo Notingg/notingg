@@ -2,6 +2,8 @@ import fs from 'fs';
 import S3 from 'aws-sdk/clients/s3';
 import { AppError } from '../../../../shared/utils/AppError';
 import { StatusCode } from '../../../../shared/utils/StatusCode';
+import axios from 'axios';
+import FormData from 'form-data';
 
 type storageTypeFunctionArgs = {
   fileBuffer: Buffer;
@@ -9,7 +11,7 @@ type storageTypeFunctionArgs = {
   mimetype: string;
 };
 
-type ALLOWED_STORAGE_TYPES = 'local' | 's3';
+type ALLOWED_STORAGE_TYPES = 'local' | 's3' | 'imgbb';
 
 export class UploadFileProviderMethod {
   private readonly s3Client = new S3({
@@ -18,6 +20,8 @@ export class UploadFileProviderMethod {
     secretAccessKey: process.env.NOTINGG_AWS_SECRET_ACCESS_KEY,
     region: process.env.NOTINGG_AWS_DEFAULT_REGION,
   });
+
+  IMGBB_BASE_URL = 'https://api.imgbb.com/1';
 
   public async execute(fileBuffer: Buffer, key: string, mimetype: string) {
     try {
@@ -57,7 +61,7 @@ export class UploadFileProviderMethod {
       };
     } catch (error: any) {
       console.log(
-        `[File:FileProvider:uploadLocal] Error while uploading file, error: ${error}`,
+        `[File:FileProvider:local] Error while uploading file, error: ${error}`,
       );
       throw new AppError(
         StatusCode.INTERNAL_SERVER_ERROR,
@@ -85,7 +89,38 @@ export class UploadFileProviderMethod {
       };
     } catch (error: any) {
       console.log(
-        `[File:FileProvider:uploadS3] Error while uploading file, error: ${error}`,
+        `[File:FileProvider:s3] Error while uploading file, error: ${error}`,
+      );
+      throw new AppError(
+        StatusCode.INTERNAL_SERVER_ERROR,
+        'INTERNAL_SERVER_ERROR',
+        'Error while uploading file',
+      );
+    }
+  }
+
+  private async imgbb({ fileBuffer }: storageTypeFunctionArgs) {
+    try {
+      const form = new FormData();
+      form.append('image', fileBuffer.toString('base64'));
+      const {
+        data: {
+          data: { url, id: key },
+        },
+      } = await axios.post(
+        `${this.IMGBB_BASE_URL}/upload?key=${process.env.IMGBB_API_KEY}`,
+        form,
+        {
+          headers: form.getHeaders(),
+        },
+      );
+      return {
+        key,
+        url,
+      };
+    } catch (error: any) {
+      console.log(
+        `[File:FileProvider:imgbb] Error while uploading file, error: ${error}`,
       );
       throw new AppError(
         StatusCode.INTERNAL_SERVER_ERROR,

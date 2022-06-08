@@ -23,4 +23,19 @@ export class FileRepository {
       );
     }
   }
+  public async findByWhere(where: any): Promise<IFileModel[]> {
+    try {
+      await dbConnect();
+      return await FileModel.find(where);
+    } catch (error) {
+      console.log(
+        `[File:FileRepository:findByWhere] Error while finding file, error: ${error}`,
+      );
+      throw new AppError(
+        StatusCode.INTERNAL_SERVER_ERROR,
+        'INTERNAL_SERVER_ERROR',
+        'Error while finding file',
+      );
+    }
+  }
 }

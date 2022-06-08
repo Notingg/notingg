@@ -36,6 +36,15 @@ export class CreateFileService {
       mimetype,
     );
 
+    const fileExist = await this.fileRepository.findByWhere({
+      key: fileUploadedData.key,
+      storage_type: process.env.STORAGE_TYPE,
+    });
+
+    if (fileExist.length) {
+      return fileExist[0];
+    }
+
     const fileCreated = await this.fileRepository.create({
       key: fileUploadedData.key,
       url: fileUploadedData.url,
