@@ -8,7 +8,10 @@ export class FileRepository {
   public async create(file: IFileModel): Promise<IFileModel> {
     try {
       await dbConnect();
-      return FileModel.create(file);
+      return FileModel.create({
+        ...file,
+        storage_type: process.env.STORAGE_TYPE,
+      });
     } catch (error) {
       console.log(
         `[File:FileRepository:create] Error while creating file, error: ${error}`,

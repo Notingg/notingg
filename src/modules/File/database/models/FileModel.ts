@@ -15,6 +15,10 @@ const FileSchema = new Schema(
       type: Schema.Types.Number,
       required: true,
     },
+    storage_type: {
+      type: Schema.Types.String,
+      required: true,
+    },
     mimetype: {
       type: Schema.Types.String,
       required: true,
