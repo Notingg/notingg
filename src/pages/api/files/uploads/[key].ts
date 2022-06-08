@@ -3,10 +3,6 @@ import fs from 'fs';
 
 export default nextConnect({
   attachParams: true,
-  onError: (error, _req, _res, next) => {
-    console.log(error);
-    next();
-  },
 }).get(getHandler);
 
 function getHandler(req: any, res: any) {

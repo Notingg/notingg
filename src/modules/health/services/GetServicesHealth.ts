@@ -8,7 +8,9 @@ export class GetServicesHealth {
     try {
       await dbConnect();
     } catch (error) {
-      console.log(`[GetServicesHealth] Error connecting to database: ${error}`);
+      console.log(
+        `[health:GetServicesHealth] Error connecting to database: ${error}`,
+      );
       dbStatus = 'DOWN';
     }
 
