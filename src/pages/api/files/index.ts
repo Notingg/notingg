@@ -16,7 +16,7 @@ export default nextConnect({
   },
 })
   .use(upload.single('file'))
-  .post(fileController.postHandler);
+  .post((req, res) => fileController.postHandler(req as any, res as any));
 
 export const config = {
   api: {
